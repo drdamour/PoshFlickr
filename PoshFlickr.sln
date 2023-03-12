@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1705.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{049B2597-FDC1-4511-AE93-4B473F7159DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoshFlickr", "src\PoshFlickr\PoshFlickr.csproj", "{15298F20-551A-49D5-B5F6-CFF4A3517C58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlickrNetCore", "src\FlickrNetCore\FlickrNetCore.csproj", "{6BB52074-E679-4602-9B16-ADCE2331A065}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{6D02039E-F462-469F-AADF-6A2EA117A6B0}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15298F20-551A-49D5-B5F6-CFF4A3517C58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15298F20-551A-49D5-B5F6-CFF4A3517C58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15298F20-551A-49D5-B5F6-CFF4A3517C58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15298F20-551A-49D5-B5F6-CFF4A3517C58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BB52074-E679-4602-9B16-ADCE2331A065}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BB52074-E679-4602-9B16-ADCE2331A065}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BB52074-E679-4602-9B16-ADCE2331A065}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BB52074-E679-4602-9B16-ADCE2331A065}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A5EE87A5-19E3-464E-A1C7-2E5EB3A2934E}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{15298F20-551A-49D5-B5F6-CFF4A3517C58} = {049B2597-FDC1-4511-AE93-4B473F7159DE}
+		{6BB52074-E679-4602-9B16-ADCE2331A065} = {049B2597-FDC1-4511-AE93-4B473F7159DE}
+	EndGlobalSection
+EndGlobal
