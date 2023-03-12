@@ -11,7 +11,9 @@ My main goal is to be able to run this kind of commmand sequnce
 ```
 Connect-Flickr
 
-Get-Album AutoUpload | select -exp photos | Where {$_.Tags.length -gt 0} | Remove-Album AutoUpload
+Get-FlickrAlbum AutoUpload | select -exp photos | Where {$_.Tags.length -gt 0} | Remove-FlickrAlbum AutoUpload
 ```
 
 cause thats not possible in organzr
+
+this targets .net6 because i was to lazy to figure out how to make record types target 2.1, and i don't really care to have that kind of compatability anyways

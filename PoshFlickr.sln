@@ -16,6 +16,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{6D02039E-F
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{0C49E7DF-3330-405E-9643-ADBFD23D9D3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlickrNetCore.Test", "test\FlickrNetCore.Test\FlickrNetCore.Test.csproj", "{254F9272-3994-4405-B57F-0629F57B0643}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlickrNetCore.QA", "test\FlickrNetCore.QA\FlickrNetCore.QA.csproj", "{03F1C977-86F0-46C8-8C38-4356EF67C653}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +36,14 @@ Global
 		{6BB52074-E679-4602-9B16-ADCE2331A065}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BB52074-E679-4602-9B16-ADCE2331A065}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BB52074-E679-4602-9B16-ADCE2331A065}.Release|Any CPU.Build.0 = Release|Any CPU
+		{254F9272-3994-4405-B57F-0629F57B0643}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{254F9272-3994-4405-B57F-0629F57B0643}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{254F9272-3994-4405-B57F-0629F57B0643}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{254F9272-3994-4405-B57F-0629F57B0643}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03F1C977-86F0-46C8-8C38-4356EF67C653}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03F1C977-86F0-46C8-8C38-4356EF67C653}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03F1C977-86F0-46C8-8C38-4356EF67C653}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03F1C977-86F0-46C8-8C38-4356EF67C653}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -40,5 +54,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{15298F20-551A-49D5-B5F6-CFF4A3517C58} = {049B2597-FDC1-4511-AE93-4B473F7159DE}
 		{6BB52074-E679-4602-9B16-ADCE2331A065} = {049B2597-FDC1-4511-AE93-4B473F7159DE}
+		{254F9272-3994-4405-B57F-0629F57B0643} = {0C49E7DF-3330-405E-9643-ADBFD23D9D3E}
+		{03F1C977-86F0-46C8-8C38-4356EF67C653} = {0C49E7DF-3330-405E-9643-ADBFD23D9D3E}
 	EndGlobalSection
 EndGlobal
