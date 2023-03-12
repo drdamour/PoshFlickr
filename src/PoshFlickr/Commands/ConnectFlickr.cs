@@ -4,9 +4,9 @@ using System.Management.Automation.Runspaces;
 
 namespace PoshFlickr
 {
-    [Cmdlet(VerbsDiagnostic.Test,"SampleCmdlet")]
+    [Cmdlet(VerbsCommunications.Connect,"Flickr")]
     [OutputType(typeof(FavoriteStuff))]
-    public class TestSampleCmdletCommand : PSCmdlet
+    public class ConnectFlickr : PSCmdlet
     {
         [Parameter(
             Mandatory = true,
