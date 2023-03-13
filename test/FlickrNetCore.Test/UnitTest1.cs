@@ -3,8 +3,8 @@
 public class UnitTest1
 {
     [Fact]
-    public void Test1()
+    public async void Test1()
     {
-
+        var x = 1;
     }
 }

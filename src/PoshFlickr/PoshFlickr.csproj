@@ -15,4 +15,7 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FlickrNetCore\FlickrNetCore.csproj" />
+  </ItemGroup>
 </Project>
