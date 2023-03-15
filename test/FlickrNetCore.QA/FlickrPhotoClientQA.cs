@@ -21,6 +21,8 @@ public class FlickrPhotoClientQA
     [Fact]
     public async void TestFetchInfoWithKey()
     {
+        
+
         var subject = new FlickrClient(
             new HttpClient(),
             new FlickrClient.Options()
@@ -31,6 +33,9 @@ public class FlickrPhotoClientQA
 
         var result = await subject.Photos.FetchInfo("52741293151");
 
+        //TODO: sometype of assert
     }
-    
+
+
+
 }

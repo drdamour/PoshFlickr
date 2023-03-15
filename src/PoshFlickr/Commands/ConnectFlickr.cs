@@ -30,6 +30,7 @@ public class ConnectFlickr : PSCmdlet
     // This method will be called for each input received from the pipeline to this cmdlet; if no input is received, this method is not called
     protected override void ProcessRecord()
     {
+        
         //todo: leverage https://learn.microsoft.com/en-us/powershell/scripting/developer/cmdlet/strongly-encouraged-development-guidelines?view=powershell-7.3#use-the-host-interfaces
         WriteObject(new FavoriteStuff { 
             FavoriteNumber = FavoriteNumber,

@@ -11,11 +11,13 @@
     <None Remove="Resources\" />
     <None Remove="Responses\" />
     <None Remove="Serialization\" />
+    <None Remove="Auth\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
     <Folder Include="Responses\" />
     <Folder Include="Serialization\" />
+    <Folder Include="Auth\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Flurl" Version="3.0.7" />

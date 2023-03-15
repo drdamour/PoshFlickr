@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Net.Http;
 using System.Net.Http.Json;
+using FlickrNetCore.Auth;
 using FlickrNetCore.Resources;
+using FlickrNetCore.Responses;
 using Flurl;
 
 namespace FlickrNetCore;
@@ -25,37 +27,43 @@ public partial class FlickrClient
         //https://www.flickr.com/services/api/flickr.photosets.getInfo.html
 
         public async Task<AlbumResource> FetchInfo(
+            AccessToken token,
             string ownerId,
             string id,
             CancellationToken cancellationToken = default
         )
         {
             var result = await fc.httpClient.GetAsync(
-                baseHref
-                    .SetQueryParam(
-                        "method",
-                        "flickr.photosets.getInfo"
-                    )
-                    .SetQueryParam(
-                        "api_key",
-                        fc.options.APIKey
-                    )
-                    .SetQueryParam(
-                        "user_id",
-                        ownerId
-                    )
-                    .SetQueryParam(
-                        "photoset_id",
-                        id
-                    ),
+                fc.MakeOAuthUrl(
+                    baseHref
+                        .SetQueryParam(
+                            "method",
+                            "flickr.photosets.getInfo"
+                        )
+                        .SetQueryParam(
+                            "api_key",
+                            fc.options.APIKey
+                        )
+                        .SetQueryParam(
+                            "user_id",
+                            ownerId
+                        )
+                        .SetQueryParam(
+                            "photoset_id",
+                            id
+                        ),
+                    token
+                ),
                 cancellationToken
             );
 
-            var r = await result.Content.ReadFromJsonAsync<AlbumResource>(
+            var r = await result.Content.ReadFromJsonAsync<AlbumResponse>(
                 cancellationToken: cancellationToken
             );
 
-            return r;
+            //TODO check stat
+
+            return r.Album;
 
         }
     }

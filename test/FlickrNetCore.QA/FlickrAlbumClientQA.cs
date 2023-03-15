@@ -14,6 +14,7 @@ public class FlickrAlbumClientQA
         );
 
         var result = await subject.Albums.FetchInfo(
+            null!,
             "63505810@N00",
             "72157638033710966"
         );
@@ -33,10 +34,33 @@ public class FlickrAlbumClientQA
         );
 
         var result = await subject.Albums.FetchInfo(
+            null!,
             "63505810@N00",
             "72157638033710966"
         );
 
+        //TODO: assert failure
     }
-    
+
+    [Fact]
+    public async void TestFetchInfoWithKeyAndSecret()
+    {
+        var subject = new FlickrClient(
+            new HttpClient(),
+            new FlickrClient.Options()
+            {
+                APIKey = "cca4104b1560829a987156c7603de1dc",
+                APISecret = Secrets.VerifyAPISecretSet()
+            }
+        );
+
+        var result = await subject.Albums.FetchInfo(
+            Secrets.VerifyAccessTokenSet(),
+            "63505810@N00",
+            "72157638033710966"
+        );
+
+        //TODO: assert failure
+    }
+
 }
