@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using System.Management.Automation;
 using System.Runtime.ExceptionServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 
 namespace FlickrNetCore;
@@ -68,16 +64,6 @@ public abstract class AsyncPSCmdlet
             _cancellationSource.Dispose();
     }
 
-    /// <summary>
-    ///		Asynchronously perform Cmdlet pre-processing.
-    /// </summary>
-    /// <returns>
-    ///		A <see cref="Task"/> representing the asynchronous operation.
-    /// </returns>
-    protected virtual Task BeginProcessingAsync()
-    {
-        return BeginProcessingAsync(_cancellationSource.Token);
-    }
 
 
     /// <summary>
@@ -89,22 +75,14 @@ public abstract class AsyncPSCmdlet
     /// <returns>
     ///		A <see cref="Task"/> representing the asynchronous operation.
     /// </returns>
-    protected virtual Task BeginProcessingAsync(CancellationToken cancellationToken)
+    protected virtual Task BeginProcessingAsync(
+        CancellationToken cancellationToken
+    )
     {
         return Task.CompletedTask;
     }
 
 
-    /// <summary>
-    ///		Asynchronously perform Cmdlet processing.
-    /// </summary>
-    /// <returns>
-    ///		A <see cref="Task"/> representing the asynchronous operation.
-    /// </returns>
-    protected virtual Task ProcessRecordAsync()
-    {
-        return ProcessRecordAsync(_cancellationSource.Token);
-    }
 
 
     /// <summary>
@@ -116,22 +94,9 @@ public abstract class AsyncPSCmdlet
     /// <returns>
     ///		A <see cref="Task"/> representing the asynchronous operation.
     /// </returns>
-    protected virtual Task ProcessRecordAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
-
-
-    /// <summary>
-    ///		Asynchronously perform Cmdlet post-processing.
-    /// </summary>
-    /// <returns>
-    ///		A <see cref="Task"/> representing the asynchronous operation.
-    /// </returns>
-    protected virtual Task EndProcessingAsync()
-    {
-        return EndProcessingAsync(_cancellationSource.Token);
-    }
+    protected abstract Task ProcessRecordAsync(
+        CancellationToken cancellationToken
+    );
 
 
     /// <summary>
@@ -143,10 +108,13 @@ public abstract class AsyncPSCmdlet
     /// <returns>
     ///		A <see cref="Task"/> representing the asynchronous operation.
     /// </returns>
-    protected virtual Task EndProcessingAsync(CancellationToken cancellationToken)
+    protected virtual Task EndProcessingAsync(
+        CancellationToken cancellationToken
+    )
     {
         return Task.CompletedTask;
     }
+
 
 
     /// <summary>
@@ -155,7 +123,7 @@ public abstract class AsyncPSCmdlet
     protected sealed override void BeginProcessing()
     {
         ThreadAffinitiveSynchronizationContext.RunSynchronized(
-            () => BeginProcessingAsync()
+            () => BeginProcessingAsync(_cancellationSource.Token)
         );
     }
 
@@ -166,7 +134,7 @@ public abstract class AsyncPSCmdlet
     protected sealed override void ProcessRecord()
     {
         ThreadAffinitiveSynchronizationContext.RunSynchronized(
-            () => ProcessRecordAsync()
+            () => ProcessRecordAsync(_cancellationSource.Token)
         );
     }
 
@@ -177,7 +145,7 @@ public abstract class AsyncPSCmdlet
     protected sealed override void EndProcessing()
     {
         ThreadAffinitiveSynchronizationContext.RunSynchronized(
-            () => EndProcessingAsync()
+            () => EndProcessingAsync(_cancellationSource.Token)
         );
     }
 
@@ -193,88 +161,8 @@ public abstract class AsyncPSCmdlet
         base.StopProcessing();
     }
 
-
-    /// <summary>
-    ///		Write a progress record to the output stream, and as a verbose message.
-    /// </summary>
-    /// <param name="progressRecord">
-    ///		The progress record to write.
-    /// </param>
-    protected void WriteVerboseProgress(ProgressRecord progressRecord)
-    {
-        if (progressRecord == null)
-            throw new ArgumentNullException(nameof(progressRecord));
-
-
-        WriteProgress(progressRecord);
-        WriteVerbose(progressRecord.StatusDescription);
-    }
-
-
-    /// <summary>
-    ///		Write a progress record to the output stream, and as a verbose message.
-    /// </summary>
-    /// <param name="progressRecord">
-    ///		The progress record to write.
-    /// </param>
-    /// <param name="messageOrFormat">
-    ///		The message or message-format specifier.
-    /// </param>
-    /// <param name="formatArguments">
-    ///		Optional format arguments.
-    /// </param>
-    protected void WriteVerboseProgress(ProgressRecord progressRecord, string messageOrFormat, params object[] formatArguments)
-    {
-        if (progressRecord == null)
-            throw new ArgumentNullException(nameof(progressRecord));
-
-
-        if (String.IsNullOrWhiteSpace(messageOrFormat))
-            throw new ArgumentException("Argument cannot be null, empty, or composed entirely of whitespace: 'messageOrFormat'.", nameof(messageOrFormat));
-
-
-        if (formatArguments == null)
-            throw new ArgumentNullException(nameof(formatArguments));
-
-
-        progressRecord.StatusDescription = String.Format(messageOrFormat, formatArguments);
-        WriteVerboseProgress(progressRecord);
-    }
-
-
-    /// <summary>
-    ///		Write a completed progress record to the output stream.
-    /// </summary>
-    /// <param name="progressRecord">
-    ///		The progress record to complete.
-    /// </param>
-    /// <param name="completionMessageOrFormat">
-    ///		The completion message or message-format specifier.
-    /// </param>
-    /// <param name="formatArguments">
-    ///		Optional format arguments.
-    /// </param>
-    protected void WriteProgressCompletion(ProgressRecord progressRecord, string completionMessageOrFormat, params object[] formatArguments)
-    {
-        if (progressRecord == null)
-            throw new ArgumentNullException(nameof(progressRecord));
-
-
-        if (String.IsNullOrWhiteSpace(completionMessageOrFormat))
-            throw new ArgumentException("Argument cannot be null, empty, or composed entirely of whitespace: 'completionMessageOrFormat'.", nameof(completionMessageOrFormat));
-
-
-        if (formatArguments == null)
-            throw new ArgumentNullException(nameof(formatArguments));
-
-
-        progressRecord.StatusDescription = String.Format(completionMessageOrFormat, formatArguments);
-        progressRecord.PercentComplete = 100;
-        progressRecord.RecordType = ProgressRecordType.Completed;
-        WriteProgress(progressRecord);
-        WriteVerbose(progressRecord.StatusDescription);
-    }
 }
+
 
 /// <summary>
 ///		A synchronisation context that runs all calls scheduled on it (via <see cref="SynchronizationContext.Post"/>) on a single thread.

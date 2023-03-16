@@ -1,52 +1,87 @@
-﻿using System;
-using System.Management.Automation;
-using System.Management.Automation.Runspaces;
+﻿using System.Management.Automation;
+using System.Management.Automation.Host;
+using FlickrNetCore;
+using FlickrNetCore.Resources;
 
 namespace PoshFlickr.Commands;
 
-[Cmdlet(VerbsCommunications.Connect,"Flickr")]
-[OutputType(typeof(FavoriteStuff))]
-public class ConnectFlickr : PSCmdlet
+[Cmdlet(VerbsCommunications.Connect, "Flickr")]
+[OutputType(typeof(PhotoResource))]
+public class ConnectFlickr : AsyncPSCmdlet
 {
+    //TODO: there should be a way to not pass a secret for anonymous/logged off browsing with a consumer key only
+    //TODO: help should describe how to gen a consumer key, link you there
+
     [Parameter(
         Mandatory = true,
-        Position = 0,
-        ValueFromPipeline = true,
-        ValueFromPipelineByPropertyName = true)]
-    public int FavoriteNumber { get; set; }
+        Position = 0
+    )]
+    public string ConsumerKey { get; set; } = "";
 
     [Parameter(
-        Position = 1,
-        ValueFromPipelineByPropertyName = true)]
-    [ValidateSet("Cat", "Dog", "Horse")]
-    public string FavoritePet { get; set; } = "Dog";
+        Mandatory = true,
+        Position = 1
+    )]
+    public string ConsumerSecret { get; set; } = "";
 
-    // This method gets called once for each cmdlet in the pipeline when the pipeline starts executing
-    protected override void BeginProcessing()
-    {
-        WriteVerbose("Begin!");
-    }
 
     // This method will be called for each input received from the pipeline to this cmdlet; if no input is received, this method is not called
-    protected override void ProcessRecord()
+    protected override async Task ProcessRecordAsync(
+        CancellationToken cancellationToken
+    )
     {
-        
+
         //todo: leverage https://learn.microsoft.com/en-us/powershell/scripting/developer/cmdlet/strongly-encouraged-development-guidelines?view=powershell-7.3#use-the-host-interfaces
-        WriteObject(new FavoriteStuff { 
-            FavoriteNumber = FavoriteNumber,
-            FavoritePet = FavoritePet
-        });
+
+        var state = new SharedState(
+            new FlickrClient(
+                new HttpClient(),
+                new FlickrClient.Options()
+                {
+                    APIKey = this.ConsumerKey,
+                    APISecret = this.ConsumerSecret
+                }
+            )
+        );
+
+        this.SessionState.PSVariable.Set(
+            SharedState.StateKey,
+            state    
+        );
+
+        
+
+        var reqToken = await state.Client.FetchRequestToken(cancellationToken);
+
+        Dictionary<string, PSObject> answer = null!;
+        do {
+            answer = this.Host.UI.Prompt(
+                "verification token needed",
+                $" nav to {reqToken.MakeAuthorizeHref()} val",
+                new System.Collections.ObjectModel.Collection<FieldDescription>()
+                {
+                    new FieldDescription("token")
+                }
+            );
+        } while (!answer.ContainsKey("token") || string.IsNullOrWhiteSpace(answer["token"].ToString()));
+
+        state = state with
+        {
+            AccessToken = await state.Client.FetchAccessToken(
+                reqToken,
+                answer["token"].ToString(),
+                cancellationToken
+            )
+        };
+
+        this.SessionState.PSVariable.Set(
+            SharedState.StateKey,
+            state
+        );
+
+        WriteObject(
+            $"token aquired for {state.AccessToken.UserName}"
+        );
     }
 
-    // This method will be called once at the end of pipeline execution; if no input is received, this method is not called
-    protected override void EndProcessing()
-    {
-        WriteVerbose("End!");
-    }
-}
-
-public class FavoriteStuff
-{
-    public int FavoriteNumber { get; set; }
-    public string FavoritePet { get; set; }
 }

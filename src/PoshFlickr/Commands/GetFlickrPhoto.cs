@@ -19,13 +19,6 @@ public class GetFlickrPhoto : AsyncPSCmdlet
     public string[] Id { get; set; } = Array.Empty<string>();
 
 
-    protected override async Task BeginProcessingAsync(
-        CancellationToken cancellationToken
-    )
-    {
-        WriteVerbose("Begin!");
-    }
-
     protected override async Task ProcessRecordAsync(
         CancellationToken cancellationToken
     )
@@ -36,11 +29,5 @@ public class GetFlickrPhoto : AsyncPSCmdlet
         );
     }
 
-    protected override async Task EndProcessingAsync(
-        CancellationToken cancellationToken
-    )
-    {
-        WriteVerbose("End!");
-    }
 }
 

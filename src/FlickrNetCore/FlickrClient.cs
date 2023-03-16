@@ -38,6 +38,16 @@ public partial class FlickrClient
         this.Albums = new AlbumClient(this);
     }
 
+    public Task<RequestToken> FetchRequestToken(        
+        CancellationToken cancellationToken
+    )
+    {
+        return this.FetchRequestToken(
+            OUT_OF_BAND_CALLBACK_HREF,
+            cancellationToken:cancellationToken
+        );
+    }
+
     public async Task<RequestToken> FetchRequestToken(
         string callbackHref = OUT_OF_BAND_CALLBACK_HREF,
         CancellationToken cancellationToken = default

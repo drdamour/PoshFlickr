@@ -26,8 +26,22 @@ public partial class FlickrClient
 
         //https://www.flickr.com/services/api/flickr.photosets.getInfo.html
 
-        public async Task<AlbumResource> FetchInfo(
+        public Task<AlbumResource> FetchInfo(
             AccessToken token,
+            string id,
+            CancellationToken cancellationToken = default
+        )
+        {
+            return FetchInfo(
+                token,
+                token.UserId,
+                id,
+                cancellationToken
+            );
+        }
+
+        public async Task<AlbumResource> FetchInfo(
+            AccessToken? token,
             string ownerId,
             string id,
             CancellationToken cancellationToken = default
@@ -61,7 +75,7 @@ public partial class FlickrClient
                 cancellationToken: cancellationToken
             );
 
-            //TODO check stat
+            //TODO check stat and null
 
             return r.Album;
 
