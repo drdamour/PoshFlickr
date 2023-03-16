@@ -9,9 +9,9 @@ Also since it was needed a simple Flickr net core client hapily stealing from va
 My main goal is to be able to run this kind of commmand sequnce
 
 ```
-Connect-Flickr
+Connect-Flickr <apikey> <apisecret>
 
-Get-FlickrAlbum AutoUpload | select -exp photos | Where {$_.Tags.length -gt 0} | Remove-Album AutoUpload
+Get-FlickrAlbum -Name "Auto Upload" | Get-FlickrAlbumPhotos | Where {$_.Tags.length -gt 0} | Remove-FlickrPhotoFromAlbum AutoUpload
 ```
 
 cause thats not possible in organzr

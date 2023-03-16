@@ -1,12 +1,7 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using FlickrNetCore.Auth;
-using FlickrNetCore.Resources;
 using Flurl;
 
 namespace FlickrNetCore;
@@ -202,6 +197,22 @@ public partial class FlickrClient
                 )
             )
         );
+    }
+
+
+    protected Url StartFlickrUrl(
+        string method
+    )
+    {
+        return baseHref
+            .SetQueryParam(
+                "method",
+                method
+            )
+            .SetQueryParam(
+                "api_key",
+                this.options.APIKey
+            );
     }
 
 

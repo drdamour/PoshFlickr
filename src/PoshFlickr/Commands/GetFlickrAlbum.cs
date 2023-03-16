@@ -12,9 +12,18 @@ public class GetFlickrAlbum : StateRequiredAsyncPSCmdlet
         Mandatory = true,
         Position = 0,
         ValueFromPipeline = true,
-        ValueFromPipelineByPropertyName = true
+        ValueFromPipelineByPropertyName = true,
+        ParameterSetName = "byId"
     )]
     public string[] Id { get; set; } = Array.Empty<string>();
+
+    [Parameter(
+        Mandatory = true,
+        ValueFromPipeline = true,
+        ValueFromPipelineByPropertyName = true,
+        ParameterSetName = "byName"
+    )]
+    public string[] Name { get; set; } = Array.Empty<string>();
 
 
     [Parameter(
@@ -23,52 +32,67 @@ public class GetFlickrAlbum : StateRequiredAsyncPSCmdlet
         ValueFromPipeline = false,
         ValueFromPipelineByPropertyName = true
     )]
-    public string UserId { get; set; } = "";
+    public string? UserId { get; set; } = null;
 
     protected override async Task ProcessRecordAsync(
         SharedState state,
         CancellationToken cancellationToken
     )
     {
-
-
-        if (string.IsNullOrWhiteSpace(UserId))
+        if (Id.Length > 0)
         {
-            if (state.HasToken(out var token))
+            if (string.IsNullOrWhiteSpace(UserId))
+            {
+                if (state.HasToken(out var token))
+                {
+                    foreach (var id in Id)
+                    {
+                        WriteObject(
+                            await state.Client.Albums.FetchInfo(
+                                token,
+                                id
+                            )
+                        );
+                    }
+                }
+                else
+                {
+                    throw new Exception("no UserId supplied and no access token present. Either supply UserId or use Connect-Flickr to establish an access token");
+                }
+
+            }
+            else
             {
                 foreach (var id in Id)
                 {
                     WriteObject(
                         await state.Client.Albums.FetchInfo(
-                            token,
+                            state.AccessToken,
+                            UserId,
                             id
                         )
                     );
                 }
             }
-            else
-            {
-                throw new Exception("no UserId supplied and no access token present. Either supply UserId or use Connect-Flickr to establish an access token");
-            }
-
         }
         else
+        //by name
         {
-            foreach (var id in Id)
+            var albums = await state.Client.Albums.FetchList(
+                state.AccessToken,
+                UserId
+            );
+
+            foreach(var a in albums)
             {
-                WriteObject(
-                    await state.Client.Albums.FetchInfo(
-                        state.AccessToken,
-                        UserId,
-                        id
-                    )
-                );
+                if(Name.Contains(a.Title))
+                {
+                    WriteObject(
+                        a
+                    );
+                }
             }
         }
-
-
-       
-        
 
         
     }

@@ -13,13 +13,13 @@ public partial class FlickrClient
 
     public class PhotoClient
     {
-        private readonly FlickrClient fc;
+        private readonly FlickrClient flickr;
 
         internal PhotoClient(
             FlickrClient fc
         )
         {
-            this.fc = fc;
+            this.flickr = fc;
         }
 
         public async Task<PhotoResource> FetchInfo(
@@ -27,15 +27,10 @@ public partial class FlickrClient
             CancellationToken cancellationToken = default
         )
         {
-            var result = await fc.httpClient.GetAsync(
-                baseHref
-                    .SetQueryParam(
-                        "method",
+            var result = await flickr.httpClient.GetAsync(
+                flickr
+                    .StartFlickrUrl(
                         "flickr.photos.getInfo"
-                    )
-                    .SetQueryParam(
-                        "api_key",
-                        fc.options.APIKey
                     )
                     .SetQueryParam(
                         "photo_id",

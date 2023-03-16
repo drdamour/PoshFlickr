@@ -63,4 +63,25 @@ public class FlickrAlbumClientQA
         //TODO: assert failure
     }
 
+
+    [Fact]
+    public async void TestFetchListWithKeyAndSecret()
+    {
+        var subject = new FlickrClient(
+            new HttpClient(),
+            new FlickrClient.Options()
+            {
+                APIKey = "cca4104b1560829a987156c7603de1dc",
+                APISecret = Secrets.VerifyAPISecretSet()
+            }
+        );
+
+        var result = await subject.Albums.FetchList(
+            Secrets.VerifyAccessTokenSet(),
+            ""
+        );
+
+        //TODO: assert failure
+    }
+
 }
