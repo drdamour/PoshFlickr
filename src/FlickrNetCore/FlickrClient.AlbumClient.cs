@@ -1,10 +1,7 @@
-﻿using System;
-using System.Net.Http;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using FlickrNetCore.Auth;
 using FlickrNetCore.Resources;
 using FlickrNetCore.Responses;
-using Flurl;
 
 namespace FlickrNetCore;
 
@@ -27,23 +24,23 @@ public partial class FlickrClient
         //https://www.flickr.com/services/api/flickr.photosets.getInfo.html
 
         public Task<AlbumResource> FetchInfo(
-            AccessToken token,
             string id,
+            AccessToken token,
             CancellationToken cancellationToken = default
         )
         {
             return FetchInfo(
-                token,
                 token.UserId,
                 id,
+                token,
                 cancellationToken
             );
         }
 
         public async Task<AlbumResource> FetchInfo(
-            AccessToken? token,
             string ownerId,
             string id,
+            AccessToken? token = null,
             CancellationToken cancellationToken = default
         )
         {
@@ -77,11 +74,12 @@ public partial class FlickrClient
 
         //https://www.flickr.com/services/api/flickr.photosets.getList.html
 
+
         //TODO: convert to IAsyncEnumerable that goes through the whole page collection wiht params
         //but not really needed since this supposedly returns all the items in a page...
         public async Task<IEnumerable<AlbumResource>> FetchList(
-            AccessToken? token,
             string? ownerId = null,
+            AccessToken? token = null,
             CancellationToken cancellationToken = default
         )
         {
@@ -106,7 +104,7 @@ public partial class FlickrClient
                 cancellationToken
             );
 
-            var r = await result.Content.ReadFromJsonAsync<PhotosetsPageResponse>(
+            var r = await result.Content.ReadFromJsonAsync<AlbumsPageResponse>(
                 cancellationToken: cancellationToken
             );
 
@@ -115,6 +113,73 @@ public partial class FlickrClient
             return r.Page.Albums;
 
         }
+
+
+        //https://www.flickr.com/services/api/flickr.photosets.getPhotos.html
+
+        public Task<IEnumerable<PhotoResource>> FetchPhotos(
+            string id,
+            AccessToken token,
+            CancellationToken cancellationToken = default
+        )
+        {
+            return FetchPhotos(
+                token.UserId,
+                id,
+                token,
+                cancellationToken
+            );
+        }
+
+        //TODO: convert to IAsyncEnumerable that goes through the whole page collection wiht params
+        //but not really needed since this supposedly returns all the items in a page...
+
+        //TODO: consider renaming FetchMedia to encompass video vs photo
+        //TODO: support extras to idenify what props should be included (maps to -prop for poshflickr)
+        //TODO: support privacy filter
+        public async Task<IEnumerable<PhotoResource>> FetchPhotos(
+            string ownerId,
+            string id,
+            AccessToken? token = null,
+            CancellationToken cancellationToken = default
+        )
+        {
+
+            var result = await flickr.httpClient.GetAsync(
+                flickr.MakeOAuthUrl(
+                    flickr
+                        .StartFlickrUrl(
+                            "flickr.photosets.getPhotos"
+                        )
+                        .SetQueryParam(
+                            "user_id",
+                            ownerId
+                        )
+                        .SetQueryParam(
+                            "photoset_id",
+                            id
+                        )
+                        .SetQueryParam(
+                            "extras",
+                            "tags"
+                        )
+                        ,
+                    token
+                ),
+                cancellationToken
+            );
+
+            var r = await result.Content.ReadFromJsonAsync<PhotosPageResponse>(
+                cancellationToken: cancellationToken
+            );
+
+            //TODO check stat and null
+
+            return r.Page.Photos;
+
+        }
+
+
     }
 
 

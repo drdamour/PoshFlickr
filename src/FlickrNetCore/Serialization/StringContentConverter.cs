@@ -18,7 +18,13 @@ public class StringContentConverter : JsonConverter<string>
         JsonSerializerOptions options
     )
     {
-        if(reader.TokenType != JsonTokenType.StartObject)
+        //sometimes, title IS just a string, like when it's in a photoset result
+        if (reader.TokenType == JsonTokenType.String)
+        {
+            return reader.GetString();
+        }
+
+        if (reader.TokenType != JsonTokenType.StartObject)
         {
             throw new JsonException("expected start object");
         }

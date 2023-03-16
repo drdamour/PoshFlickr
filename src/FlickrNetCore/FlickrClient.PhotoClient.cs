@@ -1,9 +1,6 @@
-﻿using System;
-using System.Net.Http;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using FlickrNetCore.Resources;
 using FlickrNetCore.Responses;
-using Flurl;
 
 namespace FlickrNetCore;
 
