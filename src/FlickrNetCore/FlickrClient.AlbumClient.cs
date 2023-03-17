@@ -137,7 +137,6 @@ public partial class FlickrClient
         //but not really needed since this supposedly returns all the items in a page...
 
         //TODO: consider renaming FetchMedia to encompass video vs photo
-        //TODO: support extras to idenify what props should be included (maps to -prop for poshflickr)
         //TODO: support privacy filter
         public async Task<IEnumerable<AlbumPhotoResource>> FetchPhotos(
             string ownerId,
@@ -178,7 +177,50 @@ public partial class FlickrClient
 
             //TODO check stat and null
 
-            return r.Page.Photos;
+            return r.Page.Photos.Select(
+                p => p with
+                {
+                    AlbumId = r.Page.Id
+                }
+            );
+
+        }
+
+
+        //https://www.flickr.com/services/api/flickr.photosets.removePhoto.html
+
+        public async Task RemovePhoto(
+            string photoId,
+            string albumId,
+            AccessToken token,
+            CancellationToken cancellationToken = default
+        )
+        {
+            
+
+            var result = await flickr.httpClient.PostAsync(
+                flickr.MakeOAuthUrl(
+                    flickr
+                        .StartFlickrUrl(
+                            "flickr.photosets.removePhoto"
+                        )
+                        .SetQueryParam(
+                            "photo_id",
+                            photoId
+                        )
+                        .SetQueryParam(
+                            "photoset_id",
+                            albumId
+                        ),
+                    token,
+                    HttpMethod.Post
+                ),
+                new StringContent(""),
+                cancellationToken
+            );
+
+
+            //TODO check reponse content for failure info
 
         }
 

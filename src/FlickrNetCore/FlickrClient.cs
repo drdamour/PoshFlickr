@@ -164,7 +164,7 @@ public partial class FlickrClient
         }
             
 
-        string baseStr = method?.Method ?? "GET"
+        string baseStr = (method?.Method ?? "GET")
             + "&"
             + Uri.EscapeDataString(
                 url.Clone().RemoveQuery()

@@ -8,7 +8,8 @@ namespace PoshFlickr;
 //HACK: this cant be right...there must be some pace to store
 public record SharedState(
     FlickrClient Client,
-    AccessToken? AccessToken = null
+    AccessToken? AccessToken = null,
+    AuthLevel PermissionLevel = AuthLevel.Read
 )
 {
     public const string StateKey = "PoshFlickr.State";

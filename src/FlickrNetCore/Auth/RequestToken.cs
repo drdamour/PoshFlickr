@@ -14,7 +14,7 @@ public record RequestToken(
     private const string authorizeBaseHref = "https://www.flickr.com/services/oauth/authorize";
 
     public string MakeAuthorizeHref(
-        //TODO: support perms
+        AuthLevel permissionLevel
     )
     {
 
@@ -25,8 +25,7 @@ public record RequestToken(
             )
             .SetQueryParam(
                 "perms",
-                //TODO: support more
-                "read"
+                permissionLevel.ToString().ToLower()
             );
     }
 };

@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Security.AccessControl;
 using System.Text;
 using FlickrNetCore;
+using FlickrNetCore.Auth;
 using FlickrNetCore.Resources;
 
 namespace PoshFlickr.Commands;
@@ -28,6 +29,9 @@ public class ConnectFlickr : AsyncPSCmdlet
         Position = 1
     )]
     public string ConsumerSecret { get; set; } = "";
+
+    [Parameter()]
+    public AuthLevel Level { get; set; } = AuthLevel.Write;
 
     //todo: support permissions flag
 
@@ -96,21 +100,22 @@ public class ConnectFlickr : AsyncPSCmdlet
         listener.Close();
         */
 
-        
+        var authHref = reqToken.MakeAuthorizeHref(Level);
+
         Dictionary<string, PSObject> answer = null!;
         do {
-            Process.Start(new ProcessStartInfo(reqToken.MakeAuthorizeHref()) { UseShellExecute = true });
+            Process.Start(new ProcessStartInfo(authHref) { UseShellExecute = true });
 
             answer = this.Host.UI.Prompt(
                 "verification token needed",
-                $" nav to {reqToken.MakeAuthorizeHref()} val",
+                $" nav to {authHref} val",
                 new System.Collections.ObjectModel.Collection<FieldDescription>()
                 {
                     new FieldDescription("token")
                 }
             );
         } while (!answer.ContainsKey("token") || string.IsNullOrWhiteSpace(answer["token"].ToString()));
-       
+
 
         state = state with
         {
@@ -118,7 +123,8 @@ public class ConnectFlickr : AsyncPSCmdlet
                 reqToken,
                 answer["token"].ToString(),
                 cancellationToken
-            )
+            ),
+            PermissionLevel = Level,
         };
 
         this.SessionState.PSVariable.Set(

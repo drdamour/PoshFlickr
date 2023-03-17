@@ -7,11 +7,13 @@ namespace FlickrNetCore.Resources;
 //or have stirng content converter be smart and work with name:val as well
 public record AlbumPhotoResource(
     string Id,
+    string AlbumId,
     string Title,
     [property: JsonConverter(typeof(NumberAcceptingBoolConverter))]
     bool IsPublic,
     //TODO: these can be null since they are only filled when included in extras[
     [property: JsonConverter(typeof(SpaceDelimittedStringCollectionConverter))]
     IEnumerable<string>? Tags
+    //TODO: support other extras props
 );
 

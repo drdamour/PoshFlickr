@@ -127,4 +127,26 @@ public class FlickrAlbumClientQA
         //TODO: assert failure
     }
 
+    [Fact]
+    public async void TestRemovePhotoWithKeyAndSecret()
+    {
+        var subject = new FlickrClient(
+            new HttpClient(),
+            new FlickrClient.Options()
+            {
+                APIKey = "cca4104b1560829a987156c7603de1dc",
+                APISecret = Secrets.VerifyAPISecretSet()
+            }
+        );
+
+        await subject.Albums.RemovePhoto(
+            "52741548084",
+            "72157638033710966",
+            Secrets.VerifyAccessTokenSet(),
+            default
+        );
+
+        //TODO: assert failure
+    }
+
 }

@@ -53,7 +53,7 @@ public class FlickrClientQA
 
         var requestToken = await subject.FetchRequestToken();
 
-        var authorizeHref = requestToken.MakeAuthorizeHref();
+        var authorizeHref = requestToken.MakeAuthorizeHref(Auth.AuthLevel.Write);
 
         
         //TODO: some asserts
@@ -76,7 +76,7 @@ public class FlickrClientQA
 
         var requestToken = await subject.FetchRequestToken();
 
-        var authorizeHref = requestToken.MakeAuthorizeHref();
+        var authorizeHref = requestToken.MakeAuthorizeHref(Auth.AuthLevel.Write);
 
         //TODO: open a browser somehow
 
