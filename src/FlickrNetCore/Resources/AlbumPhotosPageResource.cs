@@ -1,7 +1,6 @@
 ﻿namespace FlickrNetCore.Resources;
 
-//TODO: maybe this should be AlbumPhotoPage cause the photos are slightly different...
-public record PhotoPageResource(
+public record AlbumPhotosPageResource(
     decimal Page,
     [property: JsonPropertyName("pages")]
     decimal TotalPages,
@@ -12,6 +11,6 @@ public record PhotoPageResource(
     //TODO: there's a bunch of stuff in response equivalent to AlbumResource on this we could map
 
     [property: JsonPropertyName("photo")]
-    IEnumerable<PhotoResource> Photos
+    IEnumerable<AlbumPhotoResource> Photos
 );
 

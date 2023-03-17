@@ -5,7 +5,7 @@ using FlickrNetCore.Resources;
 namespace PoshFlickr.Commands;
 
 [Cmdlet(VerbsCommon.Get, "FlickrAlbum")]
-[OutputType(typeof(PhotoResource))]
+[OutputType(typeof(AlbumPhotoResource))]
 public class GetFlickrAlbum : StateRequiredAsyncPSCmdlet
 {
     [Parameter(
@@ -32,7 +32,7 @@ public class GetFlickrAlbum : StateRequiredAsyncPSCmdlet
         ValueFromPipeline = false,
         ValueFromPipelineByPropertyName = true
     )]
-    public string? UserId { get; set; } = null;
+    public string? OwnerId { get; set; } = null;
 
     protected override async Task ProcessRecordAsync(
         SharedState state,
@@ -41,7 +41,7 @@ public class GetFlickrAlbum : StateRequiredAsyncPSCmdlet
     {
         if (Id.Length > 0)
         {
-            if (string.IsNullOrWhiteSpace(UserId))
+            if (string.IsNullOrWhiteSpace(OwnerId))
             {
                 if (state.HasToken(out var token))
                 {
@@ -49,8 +49,9 @@ public class GetFlickrAlbum : StateRequiredAsyncPSCmdlet
                     {
                         WriteObject(
                             await state.Client.Albums.FetchInfo(
+                                id,
                                 token,
-                                id
+                                cancellationToken
                             )
                         );
                     }
@@ -67,9 +68,10 @@ public class GetFlickrAlbum : StateRequiredAsyncPSCmdlet
                 {
                     WriteObject(
                         await state.Client.Albums.FetchInfo(
+                            OwnerId,
+                            id,
                             state.AccessToken,
-                            UserId,
-                            id
+                            cancellationToken
                         )
                     );
                 }
@@ -79,8 +81,9 @@ public class GetFlickrAlbum : StateRequiredAsyncPSCmdlet
         //by name
         {
             var albums = await state.Client.Albums.FetchList(
+                OwnerId,
                 state.AccessToken,
-                UserId
+                cancellationToken
             );
 
             foreach(var a in albums)

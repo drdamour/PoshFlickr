@@ -1,6 +1,6 @@
 ﻿namespace FlickrNetCore.Resources;
 
-public record AlbumPageResource(
+public record AlbumsPageResource(
     decimal Page,
     [property: JsonPropertyName("pages")]
     decimal TotalPages,

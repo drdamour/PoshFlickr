@@ -117,17 +117,19 @@ public partial class FlickrClient
 
         //https://www.flickr.com/services/api/flickr.photosets.getPhotos.html
 
-        public Task<IEnumerable<PhotoResource>> FetchPhotos(
+        public Task<IEnumerable<AlbumPhotoResource>> FetchPhotos(
             string id,
             AccessToken token,
-            CancellationToken cancellationToken = default
+            CancellationToken cancellationToken = default,
+            params string[] extraProperties
         )
         {
             return FetchPhotos(
                 token.UserId,
                 id,
                 token,
-                cancellationToken
+                cancellationToken,
+                extraProperties
             );
         }
 
@@ -137,11 +139,12 @@ public partial class FlickrClient
         //TODO: consider renaming FetchMedia to encompass video vs photo
         //TODO: support extras to idenify what props should be included (maps to -prop for poshflickr)
         //TODO: support privacy filter
-        public async Task<IEnumerable<PhotoResource>> FetchPhotos(
+        public async Task<IEnumerable<AlbumPhotoResource>> FetchPhotos(
             string ownerId,
             string id,
             AccessToken? token = null,
-            CancellationToken cancellationToken = default
+            CancellationToken cancellationToken = default,
+            params string[] extraProperties
         )
         {
 
@@ -161,7 +164,7 @@ public partial class FlickrClient
                         )
                         .SetQueryParam(
                             "extras",
-                            "tags"
+                            string.Join(",", extraProperties)
                         )
                         ,
                     token
@@ -169,7 +172,7 @@ public partial class FlickrClient
                 cancellationToken
             );
 
-            var r = await result.Content.ReadFromJsonAsync<PhotosPageResponse>(
+            var r = await result.Content.ReadFromJsonAsync<AlbumPhotosPageResponse>(
                 cancellationToken: cancellationToken
             );
 

@@ -4,7 +4,7 @@ namespace FlickrNetCore.Responses;
 
 public record AlbumsPageResponse(
 	[property: JsonPropertyName("photosets")]
-	AlbumPageResource Page,
+	AlbumsPageResource Page,
     string Stat,
 	decimal Code,
 	string Message

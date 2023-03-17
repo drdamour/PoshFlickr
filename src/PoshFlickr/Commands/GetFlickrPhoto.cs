@@ -7,7 +7,7 @@ using FlickrNetCore.Resources;
 namespace PoshFlickr.Commands;
 
 [Cmdlet(VerbsCommon.Get, "FlickrPhoto")]
-[OutputType(typeof(PhotoResource))]
+[OutputType(typeof(AlbumPhotoResource))]
 public class GetFlickrPhoto : AsyncPSCmdlet
 {
     [Parameter(

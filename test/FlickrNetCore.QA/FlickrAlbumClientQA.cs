@@ -86,7 +86,7 @@ public class FlickrAlbumClientQA
 
 
     [Fact]
-    public async void TestFetchPhotosWithKeyAndSecret()
+    public async void TestFetchPhotosWithKeyAndSecretNoExtras()
     {
         var subject = new FlickrClient(
             new HttpClient(),
@@ -100,6 +100,28 @@ public class FlickrAlbumClientQA
         var result = await subject.Albums.FetchPhotos(
             "72157638033710966",
             Secrets.VerifyAccessTokenSet()
+        );
+
+        //TODO: assert failure
+    }
+
+    [Fact]
+    public async void TestFetchPhotosWithKeyAndSecretExtraAsTags()
+    {
+        var subject = new FlickrClient(
+            new HttpClient(),
+            new FlickrClient.Options()
+            {
+                APIKey = "cca4104b1560829a987156c7603de1dc",
+                APISecret = Secrets.VerifyAPISecretSet()
+            }
+        );
+
+        var result = await subject.Albums.FetchPhotos(
+            "72157638033710966",
+            Secrets.VerifyAccessTokenSet(),
+            default,
+            "tags"
         );
 
         //TODO: assert failure

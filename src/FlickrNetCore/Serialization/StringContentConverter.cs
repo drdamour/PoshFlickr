@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json;
 
 namespace FlickrNetCore.Serialization;
 
@@ -17,12 +15,7 @@ public class StringContentConverter : JsonConverter<string>
         Type typeToConvert,
         JsonSerializerOptions options
     )
-    {
-        //sometimes, title IS just a string, like when it's in a photoset result
-        if (reader.TokenType == JsonTokenType.String)
-        {
-            return reader.GetString();
-        }
+    { 
 
         if (reader.TokenType != JsonTokenType.StartObject)
         {
