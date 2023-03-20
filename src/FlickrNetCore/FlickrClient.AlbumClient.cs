@@ -186,7 +186,7 @@ public partial class FlickrClient
 
         }
 
-
+        //TODO: any benefit to removePhoto vs removePhotos? lke why use this over bulk w/ 1 entry
         //https://www.flickr.com/services/api/flickr.photosets.removePhoto.html
 
         public async Task RemovePhoto(
@@ -197,7 +197,7 @@ public partial class FlickrClient
         )
         {
             
-
+            //TODO: force into body if length is too long for QSP
             var result = await flickr.httpClient.PostAsync(
                 flickr.MakeOAuthUrl(
                     flickr
@@ -220,7 +220,7 @@ public partial class FlickrClient
             );
 
 
-            //TODO check reponse content for failure info
+            //TODO check reponse content for failure info..its just the base response so maybe that shouldnt be abstract
 
         }
 

@@ -31,6 +31,12 @@ public class RemoveFlickrAlbumPhoto : StateRequiredAsyncPSCmdlet
         CancellationToken cancellationToken
     )
     {
+        //TODO: instead of this are you supposed to collect em all in here
+        //then in endprocessing make a call to RemovePhotos so you turn single into bulk?
+        //that makes some logical sense...
+
+        //TODO: this definitely is supposed to opt into the should confirmation thingy nad have a --force
+        //should level could be based on count if we do above thing
 
         foreach (var id in Id)
         {
