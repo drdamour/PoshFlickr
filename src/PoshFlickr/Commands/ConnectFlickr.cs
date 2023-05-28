@@ -60,36 +60,70 @@ public class ConnectFlickr : AsyncPSCmdlet
             state    
         );
 
-        //TOOD: support a -use-code prompt to leveage oob redirect with prompt as option
-        //but by default use HttpListener with redirect to localhost
-        //blocked by https://www.flickr.com/help/forum/en-us/72157712826332472/
-        //or https://www.flickr.com/groups/51035612836@N01/discuss/72157712651258108/
+
+
+        //todo: find an open port via https://stackoverflow.com/a/46666370/442773
+        var openPort = 12000;
+        //note redirect to http localhost was broken for a while but got fixed see https://www.flickr.com/groups/51035612836@N01/discuss/72157712651258108/
+        var listenerHref = $"http://localhost:{openPort}/";
+        var listener = new HttpListener();
+        listener.Prefixes.Add(listenerHref);
+        listener.Start();
+        
 
         var reqToken = await state.Client.FetchRequestToken(
-            "oob",
+            //TOOD: support a -use-code prompt option to leveage oob/device code flow
+            //"oob",
+            listenerHref,
             cancellationToken
         );
 
-        /*
-        //todo: find an open port via https://stackoverflow.com/a/46666370/442773
-        var listener = new HttpListener();
-        listener.Prefixes.Add($"http://localhost:12000/");
-        listener.Start();
 
-        Process.Start(new ProcessStartInfo(reqToken.MakeAuthorizeHref()) { UseShellExecute = true });
+        Process.Start(
+            new ProcessStartInfo(
+                reqToken
+                    .MakeAuthorizeHref(
+                        Level
+                    )
+            )
+            {
+                UseShellExecute = true
+            }
+        );
 
 
         while (listener.IsListening)
         {
-            WriteVerbose("listener loop");
-            var context = await listener.GetContextAsync();
+            WriteVerbose("listener loop begin");
+            //TODO: add some timeout
+            var context = await listener.GetContextAsync()
+
+            //var oauthtoken = context.Request.QueryString["oauth_token"];
+
+            //todo: check this value as being there and not empty
+            //if it is then give an html form to retry or exit
+            var verifier = context.Request.QueryString["oauth_verifier"];
 
 
-            var url = context.Request.Url.ToString();
+            state = state with
+            {
+                AccessToken = await state.Client.FetchAccessToken(
+                    reqToken,
+                    verifier,
+                    cancellationToken
+                ),
+                PermissionLevel = Level,
+            };
 
             var response = context.Response;
             response.StatusCode = 200;
-            response.OutputStream.WriteAsync(Encoding.UTF8.GetBytes($"all good {url}"));
+
+            await response.OutputStream.WriteAsync(
+                Encoding.UTF8.GetBytes(
+                    "access token received, you can close this browser"
+                )
+            );
+
             response.Close();
 
             break;
@@ -98,10 +132,10 @@ public class ConnectFlickr : AsyncPSCmdlet
 
         listener.Stop();
         listener.Close();
-        */
+        
 
-        var authHref = reqToken.MakeAuthorizeHref(Level);
-
+        //var authHref = reqToken.MakeAuthorizeHref(Level);
+        /*
         Dictionary<string, PSObject> answer = null!;
         do {
             Process.Start(new ProcessStartInfo(authHref) { UseShellExecute = true });
@@ -116,16 +150,8 @@ public class ConnectFlickr : AsyncPSCmdlet
             );
         } while (!answer.ContainsKey("token") || string.IsNullOrWhiteSpace(answer["token"].ToString()));
 
-
-        state = state with
-        {
-            AccessToken = await state.Client.FetchAccessToken(
-                reqToken,
-                answer["token"].ToString(),
-                cancellationToken
-            ),
-            PermissionLevel = Level,
-        };
+        */
+        
 
         this.SessionState.PSVariable.Set(
             SharedState.StateKey,
